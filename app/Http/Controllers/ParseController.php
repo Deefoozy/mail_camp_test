@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Models\ParsedMessage;
 
 class ParseController extends Controller
@@ -17,6 +18,13 @@ class ParseController extends Controller
         // save input to database
 
         // return 200 with parsed result
+
+        Response::json(
+            [
+                'message' => 'Hello world!',
+            ],
+            200
+        );
     }
 
     public function encode() {
@@ -27,5 +35,11 @@ class ParseController extends Controller
         // save input to database
 
         // return 200 with parsed result
+        Response::json(
+            [
+                'message' => 'Hello world!',
+            ],
+            200
+        );
     }
 }
