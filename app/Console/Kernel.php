@@ -35,6 +35,8 @@ class Kernel extends ConsoleKernel
 
             $starWappie->name = $starWappieJSON['name'];
             $starWappie->planet_name = $planetRes['name'];
+
+            $starWappie->save();
         })->daily();
     }
 
