@@ -14,6 +14,15 @@ class ProcessedMessage extends Model
         'direction',
     ];
 
+    function reconstructSource() {
+        switch($this->direction) {
+            case 'raw_str':
+                return ProcessedMessage::encodeMessage($this->parsed_result)->parsed_result;
+            case 'str_raw':
+                return ProcessedMessage::parseMessage($this->parsed_result)->parsed_result;
+        }
+    }
+
     static function parseMessage(string $input) {
         $splitInputs = explode('.', $input);
         $result = '';
