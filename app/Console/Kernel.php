@@ -15,33 +15,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->call(function () {
-            $wappieRes = Http::get('https://swapi.dev/api/people/');
-            if (!$wappieRes->successful()) return;
-
-            $starWappies = $wappieRes->json();
-
-            $length = $starWappies['count'];
-            $randomIndex = rand(0, $length - 1);
-
-            if ($randomIndex > count($starWappies['results'])) {
-                $wappieRes = Http::get('https://swapi.dev/api/people/' . $randomIndex + 1 . '/');
-                if (!$wappieRes->successful()) return;
-
-                $starWappieJSON = $wappieRes->json();
-            } else {
-                $starWappieJSON = $starWappies['results'][$randomIndex];
-            }
-
-            $starWappie = StarWappie::where('name', $starWappieJSON['name'])->first();
-            if(!$starWappie) {
-                $starWappie = new StarWappie();
-            }
-
-            $planetRes = Http::get($starWappieJSON['homeworld']);
-            if (!$planetRes->successful()) return;
-
-            $starWappie->name = $starWappieJSON['name'];
-            $starWappie->planet_name = $planetRes['name'];
+            $starWappie = StarWappie::getRandom();
 
             $starWappie->save();
         })->daily();
