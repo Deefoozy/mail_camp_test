@@ -28,17 +28,13 @@ class ParseController extends Controller
     }
 
     public function encode(MessageEncodeRequest $request) {
-        // Create validator
         $request->validated();
 
-        // encode input
         $message = $request->input('message');
 
         $parsedMessage = ParsedMessage::encodeMessage($message);
+        $parsedMessage->save();
 
-        // save input to database
-
-        // return 200 with parsed result
         return response()
             ->json([
                 'message' => $parsedMessage->parsed_result,

@@ -54,11 +54,15 @@ class ParsedMessage extends Model
         
         $result = '';
 
-        foreach(mb_str_split($input) as $char) {
+        foreach(mb_str_split($input) as $index => $char) {
             $result .= str_repeat(
                 $parseKeyReferences[$char]['key'],
                 $parseKeyReferences[$char]['index'] + 1
-            ) . '.';
+            );
+
+            if ($index < mb_strlen($input) - 1) {
+                $result .= '.';
+            }
         }
 
         return new ParsedMessage([
