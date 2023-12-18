@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ParseController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::controller(ParseController::class)->group(function() {
-    Route::post('/parse', 'parse');
-    Route::post('/encode', 'encode');
-});
+Route::post(
+    '/auth/login',
+    [AuthController::class, 'apiLogin']
+);
+
+Route::middleware('auth:sanctum')
+    ->controller(ParseController::class)->group(function() {
+        Route::post('/parse', 'parse');
+        Route::post('/encode', 'encode');
+    });
