@@ -56,6 +56,10 @@ class ProcessedMessage extends Model
 
         $input = mb_strtolower($input);
         foreach(mb_str_split($input) as $index => $char) {
+            if (!array_key_exists($char, $parseKeyReferences)) {
+                continue;
+            }
+
             $result .= str_repeat(
                 $parseKeyReferences[$char]['key'],
                 $parseKeyReferences[$char]['index'] + 1
