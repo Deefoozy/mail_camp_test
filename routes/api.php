@@ -22,11 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post(
-    '/login',
+    '/auth/login',
     [AuthController::class, 'apiLogin']
 );
 
-Route::controller(ParseController::class)->group(function() {
-    Route::post('/parse', 'parse');
-    Route::post('/encode', 'encode');
-});
+Route::middleware('auth:sanctum')
+    ->controller(ParseController::class)->group(function() {
+        Route::post('/parse', 'parse');
+        Route::post('/encode', 'encode');
+    });
