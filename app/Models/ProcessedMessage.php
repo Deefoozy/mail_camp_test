@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ParsedMessage extends Model
+class ProcessedMessage extends Model
 {
     use HasFactory;
 
@@ -39,18 +39,18 @@ class ParsedMessage extends Model
             };
 
             if ($indexedCharCount > 0) {
-                $result .= ParsedMessage::$parseKeys[$indexedChar]['std'][$indexedCharCount - 1];
+                $result .= ProcessedMessage::$parseKeys[$indexedChar]['std'][$indexedCharCount - 1];
             }
         };
 
-        return new ParsedMessage([
+        return new ProcessedMessage([
             'parsed_result' => $result,
             'direction' => 'raw_str',
         ]);
     }
 
     static function encodeMessage(string $input) {
-        $parseKeyReferences = ParsedMessage::generateEncodeKeyReferences();
+        $parseKeyReferences = ProcessedMessage::generateEncodeKeyReferences();
         
         $result = '';
 
@@ -65,7 +65,7 @@ class ParsedMessage extends Model
             }
         }
 
-        return new ParsedMessage([
+        return new ProcessedMessage([
             'parsed_result' => $result,
             'direction' => 'str_raw',
         ]);
@@ -74,7 +74,7 @@ class ParsedMessage extends Model
     static function generateEncodeKeyReferences() {
         $references = [];
 
-        foreach(ParsedMessage::$parseKeys as $key => $value) {
+        foreach(ProcessedMessage::$parseKeys as $key => $value) {
             foreach($value['std'] as $index => $char) {
                 $references[$char] = [
                     'key' => $key,

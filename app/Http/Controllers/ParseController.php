@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use App\Models\ParsedMessage;
+use App\Models\ProcessedMessage;
 use App\Http\Requests\MessageParseRequest;
 use App\Http\Requests\MessageEncodeRequest;
 use PhpParser\Node\Expr\Cast\String_;
@@ -18,7 +18,7 @@ class ParseController extends Controller
 
         $inputMessage = $request->input('message');
 
-        $parsedMessage = ParsedMessage::parseMessage($inputMessage);
+        $parsedMessage = ProcessedMessage::parseMessage($inputMessage);
         $parsedMessage->save();
 
         return response()
@@ -32,7 +32,7 @@ class ParseController extends Controller
 
         $message = $request->input('message');
 
-        $parsedMessage = ParsedMessage::encodeMessage($message);
+        $parsedMessage = ProcessedMessage::encodeMessage($message);
         $parsedMessage->save();
 
         return response()
