@@ -29,7 +29,7 @@ class ProcessedMessage extends Model
                         $specialCount++;
                         break;
                     default:
-                        if (intval($char) >= 0) {
+                        if (is_numeric($char) && (int)$char >= 0) {
                             $indexedChar = $char;
                             $indexedCharCount++;
                         }
