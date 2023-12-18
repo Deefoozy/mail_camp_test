@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\StarWappie;
 
 class Kernel extends ConsoleKernel
 {
@@ -12,7 +14,28 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            $wappieRes = Http::get('https://swapi.dev/api/people/');
+            if (!$wappieRes->successful()) return;
+
+            $starWappies = $wappieRes->json();
+
+            $length = $starWappies['count'];
+            $randomIndex = rand(0, $length - 1);
+
+            $starWappieJSON = $starWappies['results'][$randomIndex];
+
+            $starWappie = StarWappie::where('name', $starWappieJSON['name'])->first();
+            if(!$starWappie) {
+                $starWappie = new StarWappie();
+            }
+
+            $planetRes = Http::get($starWappieJSON['homeworld']);
+            if (!$planetRes->successful()) return;
+
+            $starWappie->name = $starWappieJSON['name'];
+            $starWappie->planet_name = $planetRes['name'];
+        })->daily();
     }
 
     /**
