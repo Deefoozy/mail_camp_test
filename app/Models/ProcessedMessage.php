@@ -29,7 +29,7 @@ class ProcessedMessage extends Model
                         $specialCount++;
                         break;
                     default:
-                        if (intval($char) >= 0) {
+                        if (is_numeric($char) && (int)$char >= 0) {
                             $indexedChar = $char;
                             $indexedCharCount++;
                         }
@@ -54,7 +54,12 @@ class ProcessedMessage extends Model
         
         $result = '';
 
+        $input = mb_strtolower($input);
         foreach(mb_str_split($input) as $index => $char) {
+            if (!array_key_exists($char, $parseKeyReferences)) {
+                continue;
+            }
+
             $result .= str_repeat(
                 $parseKeyReferences[$char]['key'],
                 $parseKeyReferences[$char]['index'] + 1
