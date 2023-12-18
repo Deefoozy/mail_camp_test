@@ -15,66 +15,6 @@ class ParsedMessage extends Model
     ];
 
     static function parseMessage(string $input) {
-        // search for nokia keyboard functionality
-        // find correct file to put this in
-        $keys = [
-            '0' => [
-                'std' => [' '],
-                '*' => [],
-                '**' => []
-            ],
-            '1' => [
-                'std' => [''],
-                '*' => [],
-                '**' => []
-            ],
-            '2' => [
-                'std' => ['a', 'b', 'c'],
-                '*' => [],
-                '**' => []
-            ],
-            '3' => [
-                'std' => ['d', 'e', 'f'],
-                '*' => [],
-                '**' => []
-            ],
-            '4' => [
-                'std' => ['g', 'h', 'i'],
-                '*' => [],
-                '**' => []
-            ],
-            '5' => [
-                'std' => ['j', 'k', 'l'],
-                '*' => [],
-                '**' => []
-            ],
-            '6' => [
-                'std' => ['m', 'n', 'o'],
-                '*' => [],
-                '**' => []
-            ],
-            '7' => [
-                'std' => ['p', 'q', 'r', 's'],
-                '*' => [],
-                '**' => []
-            ],
-            '8' => [
-                'std' => ['t', 'u', 'v'],
-                '*' => [],
-                '**' => []
-            ],
-            '9' => [
-                'std' => ['w', 'x', 'y', 'z'],
-                '*' => [],
-                '**' => []
-            ],
-            '#' => [
-                'std' => [' '],
-                '*' => [],
-                '**' => []
-            ]
-        ];
-
         $splitInputs = explode('.', $input);
         $result = '';
 
@@ -99,7 +39,7 @@ class ParsedMessage extends Model
             };
 
             if ($indexedCharCount > 0) {
-                $result .= $keys[$indexedChar]['std'][$indexedCharCount - 1];
+                $result .= ParsedMessage::$parseKeys[$indexedChar]['std'][$indexedCharCount - 1];
             }
         };
 
@@ -108,4 +48,95 @@ class ParsedMessage extends Model
             'direction' => 'raw_str',
         ]);
     }
+
+    static function encodeMessage(string $input) {
+        $parseKeyReferences = ParsedMessage::generateEncodeKeyReferences();
+        
+        $result = '';
+
+        foreach(mb_str_split($input) as $char) {
+            $result .= str_repeat(
+                $parseKeyReferences[$char]['key'],
+                $parseKeyReferences[$char]['index'] + 1
+            ) . '.';
+        }
+
+        return new ParsedMessage([
+            'parsed_result' => $result,
+            'direction' => 'str_raw',
+        ]);
+    }
+
+    static function generateEncodeKeyReferences() {
+        $references = [];
+
+        foreach(ParsedMessage::$parseKeys as $key => $value) {
+            foreach($value['std'] as $index => $char) {
+                $references[$char] = [
+                    'key' => $key,
+                    'index' => $index,
+                ];
+            }
+        }
+
+        return $references;
+    }
+
+    private static $parseKeys = [
+        '0' => [
+            'std' => [' '],
+            '*' => [],
+            '**' => []
+        ],
+        '1' => [
+            'std' => [''],
+            '*' => [],
+            '**' => []
+        ],
+        '2' => [
+            'std' => ['a', 'b', 'c'],
+            '*' => [],
+            '**' => []
+        ],
+        '3' => [
+            'std' => ['d', 'e', 'f'],
+            '*' => [],
+            '**' => []
+        ],
+        '4' => [
+            'std' => ['g', 'h', 'i'],
+            '*' => [],
+            '**' => []
+        ],
+        '5' => [
+            'std' => ['j', 'k', 'l'],
+            '*' => [],
+            '**' => []
+        ],
+        '6' => [
+            'std' => ['m', 'n', 'o'],
+            '*' => [],
+            '**' => []
+        ],
+        '7' => [
+            'std' => ['p', 'q', 'r', 's'],
+            '*' => [],
+            '**' => []
+        ],
+        '8' => [
+            'std' => ['t', 'u', 'v'],
+            '*' => [],
+            '**' => []
+        ],
+        '9' => [
+            'std' => ['w', 'x', 'y', 'z'],
+            '*' => [],
+            '**' => []
+        ],
+        '#' => [
+            'std' => ['#'],
+            '*' => [],
+            '**' => []
+        ]
+    ];
 }

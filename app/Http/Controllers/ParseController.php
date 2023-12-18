@@ -14,20 +14,13 @@ class ParseController extends Controller
     // create parsing/encoding data table
 
     public function parse(MessageParseRequest $request) {
-        // $testMsg = "7777.666.555.33.2";
-
-        // Create validator
         $request->validated();
 
-        // parse input
         $inputMessage = $request->input('message');
 
         $parsedMessage = ParsedMessage::parseMessage($inputMessage);
-
-        // save input to database
         $parsedMessage->save();
 
-        // return 200 with parsed result
         return response()
             ->json([
                 'message' => $parsedMessage->parsed_result,
@@ -35,20 +28,20 @@ class ParseController extends Controller
     }
 
     public function encode(MessageEncodeRequest $request) {
-        // $testMsg = "hello world";
-
         // Create validator
         $request->validated();
 
         // encode input
         $message = $request->input('message');
 
+        $parsedMessage = ParsedMessage::encodeMessage($message);
+
         // save input to database
 
         // return 200 with parsed result
         return response()
             ->json([
-                'message' => $message,
+                'message' => $parsedMessage->parsed_result,
             ], 200);
     }
 }
