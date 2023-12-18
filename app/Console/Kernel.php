@@ -23,7 +23,14 @@ class Kernel extends ConsoleKernel
             $length = $starWappies['count'];
             $randomIndex = rand(0, $length - 1);
 
-            $starWappieJSON = $starWappies['results'][$randomIndex];
+            if ($randomIndex > count($starWappies['results'])) {
+                $wappieRes = Http::get('https://swapi.dev/api/people/' . $randomIndex + 1 . '/');
+                if (!$wappieRes->successful()) return;
+
+                $starWappieJSON = $wappieRes->json();
+            } else {
+                $starWappieJSON = $starWappies['results'][$randomIndex];
+            }
 
             $starWappie = StarWappie::where('name', $starWappieJSON['name'])->first();
             if(!$starWappie) {
